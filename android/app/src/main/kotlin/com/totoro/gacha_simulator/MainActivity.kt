@@ -1,4 +1,4 @@
-package com.example.gacha_simulator
+package com.totoro.gachapachi_simulator
 
 import io.flutter.embedding.android.FlutterActivity
 

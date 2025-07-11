@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'top_tab_bar.dart'; // 共通タブバーWidgetをimport
 import 'saved_data_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'top_tab_bar.dart';
 
 const String inquiryEmail = 'kokoapp.info@gmail.com';
 const String privacyPolicyUrl =
     'https://totoro1116.github.io/privacy-policy/privacy_gacha_pachi.html';
 
 class SettingScreen extends StatelessWidget {
-  const SettingScreen({super.key});
+  final void Function(int)? onTabChange;
+  const SettingScreen({super.key, this.onTabChange});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,10 @@ class SettingScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TopTabBar(current: TopTabType.settings),
+                TopTabBar(
+                  current: TopTabType.settings,
+                  onTabChange: onTabChange,
+                ),
                 const SizedBox(height: 10),
                 const Text(
                   "設定",
@@ -53,7 +58,7 @@ class SettingScreen extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.info),
                   title: const Text('このアプリについて'),
-                  subtitle: const Text('ガチャ・パチンコ確率シミュレーター v1.0'),
+                  subtitle: const Text('ガチャパチシミュ - パチンコ＆ガチャ確率計算アプリ v1.0'),
                   onTap: () {
                     showDialog(
                       context: context,
@@ -66,6 +71,9 @@ class SettingScreen extends StatelessWidget {
                                 '開発・配布：Koko AI Lab\n\n'
                                 'このアプリは、パチンコやガチャ（ソーシャルゲーム等）の確率計算やシミュレーションを簡単に行える無料ツールです。\n'
                                 '入力したスペックに基づいて、当たり確率や連チャン期待値、出玉期待値などを手軽に計算・保存できます。\n\n'
+                                '【確率比較について】\n'
+                                '画面上に表示される現実世界の確率例は、あくまで参考値・目安として掲載しています。'
+                                'データや出典、年・地域によって数値が異なる場合がありますので、お遊びや雑学としてお楽しみください。\n\n'
                                 '【データ・プライバシーについて】\n'
                                 'アプリ内のデータはすべて端末内にのみ保存されます。\n'
                                 '個人情報や入力内容が外部に送信されることはありません。\n\n'
@@ -144,14 +152,6 @@ class SettingScreen extends StatelessWidget {
                       );
                     }
                   },
-                ),
-
-                const SizedBox(height: 32),
-                Center(
-                  child: Text(
-                    "※ここに設定項目を自由に追加できます",
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
                 ),
               ],
             ),

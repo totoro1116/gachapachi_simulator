@@ -5,102 +5,11 @@ import 'setting_screen.dart';
 import 'gachamode_screen.dart';
 import 'hamari_screen.dart';
 import 'package:gacha_simulator/models/saved_data.dart';
+import 'top_tab_bar.dart';
 
 //import 'padhinko_detail_settings.dart';
 
 enum LtMode { none, direct, challenge, upgrade }
-
-enum TopTabType { pachinko, gacha, hamari }
-
-class TopTabBar extends StatelessWidget {
-  final TopTabType current;
-  const TopTabBar({super.key, required this.current});
-
-  @override
-  Widget build(BuildContext context) {
-    Color selectedColor = Colors.deepPurple;
-    Color unselectedColor = Colors.black.withOpacity(0.6);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        // パチンコ
-        TextButton(
-          onPressed:
-              current == TopTabType.pachinko
-                  ? null
-                  : () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const PachinkoForm()),
-                    );
-                  },
-          child: Text(
-            "パチンコモード",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color:
-                  current == TopTabType.pachinko
-                      ? selectedColor
-                      : unselectedColor,
-            ),
-          ),
-        ),
-        // ガチャ
-        TextButton(
-          onPressed:
-              current == TopTabType.gacha
-                  ? null
-                  : () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (_) => const GachaModeScreen(),
-                      ),
-                    );
-                  },
-          child: Text(
-            "ガチャモード",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color:
-                  current == TopTabType.gacha ? selectedColor : unselectedColor,
-            ),
-          ),
-        ),
-        // はまり
-        TextButton(
-          onPressed:
-              current == TopTabType.hamari
-                  ? null
-                  : () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const HamariScreen()),
-                    );
-                  },
-          child: Text(
-            "はまりモード",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color:
-                  current == TopTabType.hamari
-                      ? selectedColor
-                      : unselectedColor,
-            ),
-          ),
-        ),
-        // 設定
-        IconButton(
-          icon: const Icon(Icons.settings),
-          tooltip: "設定",
-          onPressed: () {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => const SettingScreen()));
-          },
-        ),
-      ],
-    );
-  }
-}
 
 class DigitInputField extends StatelessWidget {
   final String label;
@@ -213,7 +122,9 @@ class DigitInputField extends StatelessWidget {
 }
 
 class PachinkoForm extends StatefulWidget {
-  const PachinkoForm({super.key});
+  final void Function(int)? onTabChange;
+  final VoidCallback? onAction;
+  const PachinkoForm({super.key, this.onTabChange, this.onAction});
   @override
   State<PachinkoForm> createState() => _PachinkoFormState();
 }
@@ -777,7 +688,10 @@ $modeDetails
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TopTabBar(current: TopTabType.pachinko),
+                TopTabBar(
+                  current: TopTabType.pachinko,
+                  onTabChange: widget.onTabChange,
+                ),
                 const SizedBox(height: 10),
 
                 Row(
@@ -840,7 +754,7 @@ $modeDetails
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "出玉振り分け${isDedamaDisabled ? "（無効：LT型では使用しません）" : "（追加可）"}",
+                          "右打ち出玉振り分け${isDedamaDisabled ? "（無効：LT型では使用しません）" : "（追加可）"}",
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         ...List.generate(_dedamaDigitsList.length, (i) {
@@ -1289,7 +1203,10 @@ $modeDetails
                 const SizedBox(height: 18),
                 Center(
                   child: ElevatedButton(
-                    onPressed: _calculate,
+                    onPressed: () {
+                      _calculate();
+                      widget.onAction?.call();
+                    },
                     child: const Text("計算する", style: TextStyle(fontSize: 16)),
                   ),
                 ),

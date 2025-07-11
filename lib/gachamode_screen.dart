@@ -247,7 +247,10 @@ class GachaResult {
 }
 
 class GachaModeScreen extends StatefulWidget {
-  const GachaModeScreen({Key? key}) : super(key: key);
+  final void Function(int)? onTabChange;
+  final VoidCallback? onAction;
+  const GachaModeScreen({Key? key, this.onTabChange, this.onAction})
+    : super(key: key);
 
   @override
   State<GachaModeScreen> createState() => _GachaModeScreenState();
@@ -569,7 +572,8 @@ class _GachaModeScreenState extends State<GachaModeScreen> {
                     setState(() {
                       warningMessage = '';
                     });
-                    runSimulation(gachaCount); // 累積で追加
+                    runSimulation(gachaCount);
+                    widget.onAction?.call(); // 累積で追加
                   },
                 ),
                 const SizedBox(width: 16),
@@ -606,7 +610,10 @@ class _GachaModeScreenState extends State<GachaModeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TopTabBar(current: TopTabType.gacha), // ←タブバー！
+                TopTabBar(
+                  current: TopTabType.gacha,
+                  onTabChange: widget.onTabChange,
+                ), // ←タブバー！
                 const SizedBox(height: 10),
                 ...List.generate(rarities.length, (i) => buildRarityBlock(i)),
                 Align(
@@ -662,7 +669,8 @@ class _GachaModeScreenState extends State<GachaModeScreen> {
                           cumulativeResult = GachaResult(); // ★ここでリセット
                           warningMessage = '';
                         });
-                        runSimulation(gachaCount); // ★新規集計
+                        runSimulation(gachaCount);
+                        widget.onAction?.call(); // ★新規集計
                       },
                     ),
                   ],

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'pachinko_form.dart';
-import 'setting_screen.dart';
-import 'gachamode_screen.dart';
-import 'hamari_screen.dart';
 
 enum TopTabType { pachinko, gacha, hamari, settings }
 
 class TopTabBar extends StatelessWidget {
   final TopTabType current;
-  const TopTabBar({super.key, required this.current});
+  final void Function(int)? onTabChange; // ←追加！
+
+  const TopTabBar({super.key, required this.current, this.onTabChange}); // ←追加！
 
   @override
   Widget build(BuildContext context) {
@@ -18,74 +16,68 @@ class TopTabBar extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        TextButton(
-          onPressed:
-              current == TopTabType.pachinko
-                  ? null
-                  : () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const PachinkoForm()),
-                    );
-                  },
-          child: Text(
-            "パチンコモード",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color:
-                  current == TopTabType.pachinko
-                      ? selectedColor
-                      : unselectedColor,
+        Expanded(
+          child: TextButton(
+            onPressed:
+                current == TopTabType.pachinko
+                    ? null
+                    : () => onTabChange?.call(0),
+            child: Text(
+              "パチンコ",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color:
+                    current == TopTabType.pachinko
+                        ? selectedColor
+                        : unselectedColor,
+              ),
             ),
           ),
         ),
-        TextButton(
-          onPressed:
-              current == TopTabType.gacha
-                  ? null
-                  : () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (_) => const GachaModeScreen(),
-                      ),
-                    );
-                  },
-          child: Text(
-            "ガチャモード",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color:
-                  current == TopTabType.gacha ? selectedColor : unselectedColor,
+        Expanded(
+          child: TextButton(
+            onPressed:
+                current == TopTabType.gacha ? null : () => onTabChange?.call(1),
+            child: Text(
+              "ガチャ",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color:
+                    current == TopTabType.gacha
+                        ? selectedColor
+                        : unselectedColor,
+              ),
             ),
           ),
         ),
-        TextButton(
-          onPressed:
-              current == TopTabType.hamari
-                  ? null
-                  : () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const HamariScreen()),
-                    );
-                  },
-          child: Text(
-            "はまりモード",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color:
-                  current == TopTabType.hamari
-                      ? selectedColor
-                      : unselectedColor,
+        Expanded(
+          child: TextButton(
+            onPressed:
+                current == TopTabType.hamari
+                    ? null
+                    : () => onTabChange?.call(2),
+            child: Text(
+              "はまり",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color:
+                    current == TopTabType.hamari
+                        ? selectedColor
+                        : unselectedColor,
+              ),
             ),
           ),
         ),
-        IconButton(
-          icon: const Icon(Icons.settings),
-          tooltip: "設定",
-          onPressed: () {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (_) => const SettingScreen()));
-          },
+        Expanded(
+          child: IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: "設定",
+            onPressed: () => onTabChange?.call(3),
+            color:
+                current == TopTabType.settings
+                    ? selectedColor
+                    : unselectedColor,
+          ),
         ),
       ],
     );
